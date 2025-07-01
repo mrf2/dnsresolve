@@ -16,4 +16,47 @@ struct DNS_HEADER {
 	unsigned char opcode :4;	// Purpose of message
 	unsigned char qr :1;		// Query/Response flag
 
+	unsigned char rcode :4;		// Respose code
+	unsigned char cd :1;		// Checking disabled
+	unsigned char ad :1;		// Authenticated data
+	unsigned char z :1;		// Reserved
+	unsigned char ra :1;		// Recursion available
+
+	unsigned short q_count;		// Number of question entries
+	unsigned short ans_count;
+	unsigned short auth_count;
+	unsigned short add_count;
+};
+
+// Question section format
+struct QUESTION {
+	unsigned short qtype;
+	unsigned short qclass;
+};
+
+// Function to convert "google.com" to DNS name format
+void encode_dns_name(unsigned char *dns, const char *host)
+{
+	int lock = 0, i;
+	strcat((char *)host, ".");
+
+	for (i = 0; i < strlen(host); i++) {
+		if (host[i] == '.') {
+			*dns++ = i - lock;
+			for (; lock < i; lock++) {
+				*dns++ = host[lock];
+			}
+			lock++
+		}
+	}
+	*dns++ = '\0';
+}
+
+int main()
+{
+	unsigned char buf[65536], *qname;
+	int sockfd;
+	struct sockaddr_in dest;
+
+	sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
 
