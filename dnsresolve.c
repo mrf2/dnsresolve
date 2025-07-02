@@ -58,5 +58,10 @@ int main()
 	int sockfd;
 	struct sockaddr_in dest;
 
-	sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
+	sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (sockfd < 0) {
+		perror("Socket failed");
+		exit (1);
+	}
 
+	
