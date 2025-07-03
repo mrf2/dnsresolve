@@ -64,4 +64,17 @@ int main()
 		exit (1);
 	}
 
+	dest.sin_family = AF_INET;
+	dest.sin_port = htons (53);
+	dest.sin_addr.s_addr = inet_addr("8.8.8.8");		// google DNS
+
+	// Build DNS query
+	struct DNS_HEADER *dns = (struct DNS_HEADER *) &buf;
+
+	dns->id = (unsigned short) htons(getpid());
+	dns->qr = 0;		// query
+	dns->opcode = 0;	// standard query
+	dns->aa = 0;		// Authoritative answer
+	dns->tc = 0;		// Turncated message flase
+	dns->rd = 1;		// Recursion desired yes
 	
