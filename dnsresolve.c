@@ -46,7 +46,7 @@ void encode_dns_name(unsigned char *dns, const char *host)
 			for (; lock < i; lock++) {
 				*dns++ = host[lock];
 			}
-			lock++
+			lock++;
 		}
 	}
 	*dns++ = '\0';
@@ -77,4 +77,50 @@ int main()
 	dns->aa = 0;		// Authoritative answer
 	dns->tc = 0;		// Turncated message flase
 	dns->rd = 1;		// Recursion desired yes
-	
+
+	dns->ra = 0;		// Recursion available no
+	dns->z = 0;		// Reserved no
+	dns->ad = 0;		// Authenticated data no
+	dns->cd = 0;		// Checking disabled no
+	dns->rcode = 0;		// Response code no
+
+	dns->q_count = 0;	// Number of question entries set to 0
+	dns->ans_count = 0;	// Number of answer is set to 0
+	dns->auth_count = 0;	// Number of auth count is set to 0
+	dns->add_count = 0;	// Add count set to 0
+
+	qname = (unsigned char *) &buf[sizeof(struct DNS_HEADER)];
+	encode_dns_name(qname, "google.com");
+
+	struct QUESTION *qinfo = (struct QUESTION *) &buf[sizeof(struct DNS_HEADER) + strlen((const char *)qname) + 1];
+	qinfo->qtype = htons(1);	// Type A
+	qinfo->qclass = htons(1);	// Class IN
+
+	int query_len = sizeof (struct DNS_HEADER)+strlen((const char *)qname) + 1 + sizeof (struct QUESTION);
+
+	if (sendto(sockfd, buf, query_len, 0, (struct sockaddr *)&dest, sizeof(dest)) < 0) {
+		perror("sendto failed");
+	}
+
+	printf("Sent DNS query for google.com\n");
+
+	socklen_t len = sizeof(dest);
+	int response_len = recvfrom(sockfd, buf, sizeof(buf), 0, (struct sockaddr *) &dest, &len);
+	if (response_len < 0) {
+		perror("recvfrom failed");
+	} else {
+		printf("Received %d btes\n", response_len);
+
+		// Parse first answer (not robust)
+		unsigned char *reader = &buf[query_len];
+		reader += 10;	// skip naem pointer, type, class, TTL
+		unsigned short rdlength = ntohs(*(unsigned short *) reader);
+		reader += 2;
+
+		printf("Resolved IP: %d.%d.%d.%d\n", reader[0], reader[1], reader[2], reader[3]);
+	}
+
+	close (sockfd);
+	return 0;
+}
+
