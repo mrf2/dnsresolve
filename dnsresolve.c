@@ -37,14 +37,16 @@ struct QUESTION {
 // Function to convert "google.com" to DNS name format
 void encode_dns_name(unsigned char *dns, const char *host)
 {
+	char host_data[250];
 	int lock = 0, i;
-	strcat((char *)host, ".");
+	strcpy(host_data, host);
+	strcat(host_data, ".");
 
-	for (i = 0; i < strlen(host); i++) {
-		if (host[i] == '.') {
+	for (i = 0; i < strlen(host_data); i++) {
+		if (host_data[i] == '.') {
 			*dns++ = i - lock;
 			for (; lock < i; lock++) {
-				*dns++ = host[lock];
+				*dns++ = host_data[lock];
 			}
 			lock++;
 		}
