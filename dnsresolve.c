@@ -39,6 +39,7 @@ void encode_dns_name(unsigned char *dns, const char *host)
 {
 	char host_data[250];
 	int lock = 0, i;
+
 	strcpy(host_data, host);
 	strcat(host_data, ".");
 
