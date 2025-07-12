@@ -1,7 +1,10 @@
 # Core structures in socket programming
 
 ```c
-/* struct sockaddr_in is a core structure in socket programming used for IPv4 addresses. This structure is used in userspace, passed to functions like bind(), connect(), sendto(), recvfrom(), etc.
+/* 
+ struct sockaddr_in is a core structure in socket programming used for IPv4 addresses. 
+ This structure is used in userspace, passed to functions like bind(), connect(), 
+ sendto(), recvfrom(), etc.
 */
 
 struct sockaddr_in {
@@ -12,6 +15,24 @@ struct sockaddr_in {
 };
 
 /* On 64-bit Linux, the total size is 16 bytes. */
+```
+---
+```c
+____________________________________________________________netinet/in.h
+/* Internet addresss structure */
+struct in_addr {
+    unsigned inst s_addr;       /* Network byte order (big-endian) */
+};
+____________________________________________________________netinet/in.h
+```
+#### Why Store the scalar IP address in a structure?
+***Storing a scalar address in a structure is an unfortunate artifcat from the early implementations of the socket interface. It would make more sence to define a scalar type for IP addresses, but it is too late to change now because of the enormous installed base of application.***
+
+#### Assignment
+```
+struct in_addr ip;
+
+inet_aton("192.168.10.201", &ip);   // Let the function do the conversion
 ```
 
 ## Breakdown of Common Prefixes and Suffixes
@@ -39,10 +60,6 @@ struct sockaddr_in {
  * Example: `in_port_t`, `sa_family_t`, `in_addr_t`
  * Meaning: Indicates it's a **type alias**, usually via `typedef`
  * Convention comes from `<stdint.h>` (like `uint8_t`, `size_t`, `time_t`)
-    
-
-
-
 
 ## Core structures in use
 |structure name|passed to function|
