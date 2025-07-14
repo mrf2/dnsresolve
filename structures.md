@@ -1,6 +1,14 @@
 # Core structures in socket programming
 
 ```c
+____________________________________________________________________sys/socket.h
+sockaddr: Describes a socket address
+/* Generic socket address structure (for connect, bind, and accept */
+struct sockaddr {
+    unsigned short int  sa_family;          /* Prtotocol family */
+    unsigned char       sa_data[14];        /* Address data */       
+};
+```c
 ____________________________________________________________________netinet/in.h
 /* 
  struct sockaddr_in is a core structure in socket programming used for IPv4 addresses. 
