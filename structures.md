@@ -67,6 +67,9 @@ inet_aton("192.168.10.201", &ip);   // Let the function do the conversion
    * `in_addr_t` = Internet address (IPv4 address)
    * `struct in_addr` = holds 32-bit IPv4 address
    * IPv6 uses `in6_` (like `in6_addr`)
+### `_in` suffix
+ * The `_in` suffix is short for *internet*, not for *input*.
+ * Example: `struct sockaddr_in`
 
 ### sin_ - "Socket Internet"
  * Example: `sin_port`, `sin_addr`
